@@ -10,16 +10,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip python3-dev git wget ffmpeg ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar PyTorch
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# CRÍTICO: Actualizar pip primero. Sin esto, Ubuntu instala un PyTorch viejo que causa el error.
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI
 WORKDIR /workspace/ComfyUI
 
-# Instalar requisitos y forzar la actualización de comfy-kitchen
+# CRÍTICO: Forzar PyTorch 2.5.1 o superior (que soporta 'list[int]')
+RUN pip install --no-cache-dir "torch>=2.5.1" torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu124
+
+# Instalar los requirements de ComfyUI y las dependencias extra
 RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir --upgrade comfy-kitchen && \
-    pip install --no-cache-dir accelerate transformers sentencepiece safetensors hf-transfer
+    pip install --no-cache-dir accelerate transformers sentencepiece safetensors hf-transfer comfy-kitchen
 
 EXPOSE 8188
 
