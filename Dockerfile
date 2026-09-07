@@ -2,7 +2,7 @@ FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
-    HF_HUB_ENABLE_HF_TRANSFER=1
+    HF_XET_HIGH_PERFORMANCE=1
 
 WORKDIR /workspace
 
